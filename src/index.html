@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>空污觀測站</title>
+    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5g_QO7b1pBfgl9OtX6vchzZwX1Vmxo2Y" async defer></script> -->
+    <!-- <script src="https://unpkg.com/es6-promise@4.0.5/dist/es6-promise.min.js"></script>
+    <script>ES6Promise.polyfill();</script> -->
+    <style>
+        html, body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #fff;
+        background-color: #242424;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="map" class="map"></div>
+    <img class="loading" src="./assets/cat.gif" alt="loading" title="loading" style="display: none;">
+    <div class="tree">
+        <div class="pin"></div>
+        <h2>Map Layer</h2>
+        <div class="node">
+            <h4>內政部國土測繪中心</h4>
+        </div>
+        <div class="node">
+            <input id="nlsc.gov.tw.emap" name="wmts" type="checkbox" value="nlsc.gov.tw.emap">
+            <label for="nlsc.gov.tw.emap">臺灣通用電子地圖</label>
+        </div>
+        <div class="node">
+            <input id="nlsc.gov.tw.emap96" name="wmts" type="checkbox" value="nlsc.gov.tw.emap96">
+            <label for="nlsc.gov.tw.emap96">臺灣通用電子地圖(高dpi字)</label>
+        </div>
+        <div class="node">
+            <input id="nlsc.gov.tw.emap01" name="wmts" type="checkbox" value="nlsc.gov.tw.emap01">
+            <label for="nlsc.gov.tw.emap01">臺灣通用電子地圖(灰階)</label>
+        </div>
+        <div class="node">
+            <input id="nlsc.gov.tw.emap5" name="wmts" type="checkbox" value="nlsc.gov.tw.emap5">
+            <label for="nlsc.gov.tw.emap5">臺灣通用電子地圖(套疊等高線)</label>
+        </div>
+        <div class="node">
+            <input id="nlsc.gov.tw.photo_mix" name="wmts" type="checkbox" value="nlsc.gov.tw.photo_mix">
+            <label for="nlsc.gov.tw.photo_mix">正射影像(混合)</label>
+        </div>
+        <div class="node">
+            <input id="nlsc.gov.tw.city" name="wmts" type="checkbox" value="nlsc.gov.tw.city">
+            <label for="nlsc.gov.tw.city">縣市界</label>
+        </div>
+        <div class="node">
+            <input id="nlsc.gov.tw.town" name="wmts" type="checkbox" value="nlsc.gov.tw.town">
+            <label for="nlsc.gov.tw.town">鄉鎮區界</label>
+        </div>
+        <div class="node">
+            <input id="nlsc.gov.tw.village" name="wmts" type="checkbox" value="nlsc.gov.tw.village">
+            <label for="nlsc.gov.tw.village">村里界</label>
+        </div>
+        <div class="node">
+            <h4>MapBox</h4>
+        </div>
+        <div class="node">
+            <input id="streets-v10" name="mapbox" type="checkbox" value="streets-v10">
+            <label for="streets-v10">streets-v10</label>
+        </div>
+        <div class="node">
+            <input id="outdoors-v10" name="mapbox" type="checkbox" value="outdoors-v10">
+            <label for="outdoors-v10">outdoors-v10</label>
+        </div>
+        <div class="node">
+            <input id="light-v9" name="mapbox" type="checkbox" value="light-v9">
+            <label for="light-v9">light-v9</label>
+        </div>
+        <div class="node">
+            <input id="dark-v9" name="mapbox" type="checkbox" value="dark-v9">
+            <label for="dark-v9">dark-v9</label>
+        </div>
+        <div class="node">
+            <input id="satellite-v9" name="mapbox" type="checkbox" value="satellite-v9">
+            <label for="satellite-v9">satellite-v9</label>
+        </div>
+        <div class="node">
+            <input id="satellite-streets-v10" name="mapbox" type="checkbox" value="satellite-streets-v10">
+            <label for="satellite-streets-v10">satellite-streets-v10</label>
+        </div>
+        <div class="node">
+            <input id="navigation-preview-day-v4" name="mapbox" type="checkbox" value="navigation-preview-day-v4">
+            <label for="navigation-preview-day-v4">navigation-preview-day-v4</label>
+        </div>
+        <div class="node">
+            <input id="navigation-preview-night-v4" name="mapbox" type="checkbox" value="navigation-preview-night-v4">
+            <label for="navigation-preview-night-v4">navigation-preview-night-v4</label>
+        </div>
+        <div class="node">
+            <input id="navigation-guidance-day-v4" name="mapbox" type="checkbox" value="navigation-guidance-day-v4">
+            <label for="navigation-guidance-day-v4">navigation-guidance-day-v4</label>
+        </div>
+        <div class="node">
+            <input id="navigation-guidance-night-v4" name="mapbox" type="checkbox" value="navigation-guidance-night-v4"
+                checked>
+            <label for="navigation-guidance-night-v4">navigation-guidance-night-v4</label>
+        </div>
+        <div class="node">
+            <h4>OpenStreet</h4>
+        </div>
+        <div class="node">
+            <input id="openstreet" name="openstreet" type="checkbox" value="openstreet">
+            <label for="openstreet">Open Street</label>
+        </div>
+        <div class="node">
+            <h4>GoogleMap</h4>
+        </div>
+        <div class="node">
+            <input id="googlemap" name="googlemap" type="checkbox" value="googlemap" disabled>
+            <label for="googlemap">Google Map</label>
+        </div>
+        <div class="node">
+            <h4>Stamen Design</h4>
+        </div>
+        <div class="node">
+            <input id="toner" name="stamen" type="checkbox" value="toner">
+            <label for="toner">Toner</label>
+        </div>
+        <div class="node">
+            <input id="toner-lite" name="stamen" type="checkbox" value="toner-lite">
+            <label for="toner-lite">Toner Lite</label>
+        </div>
+        <div class="node">
+            <input id="water-color" name="stamen" type="checkbox" value="water-color">
+            <label for="water-color">Water Color</label>
+        </div>
+        <div class="node">
+            <h4>WMS</h4>
+        </div>
+        <div class="node">
+            <input id="nasa-bluemarble" name="wms" type="checkbox" value="nasa-bluemarble">
+            <label for="nasa-bluemarble">NASA Bluemarble</label>
+        </div>
+    </div>
+</body>
+
+</html>
