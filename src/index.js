@@ -94,40 +94,14 @@ function LoadGeoLayer() {
         },
         style: feature => {
             let color = null;
-            switch (feature.properties.COUNTYENG) {
-                case 'Lienchiang County':
-                case 'Taitung County':
-                case 'Hualien County':
-                case 'Hsinchu City':
-                    color = '#B3FBA6'; break;
-                case 'Kinmen County':
-                case 'Pingtung County':
-                case 'Taichung City':
-                case 'Tainan City':
-                    color = '#7DFA4C';
-                    break;
-                case 'Yilan County':
-                case 'Taipei City':
-                case 'New Taipei City':
-                case 'Taoyuan City':
-                case 'Miaoli County':
-                    color = '#EF8432';
-                    break;
-                case 'Changhua County':
-                case 'Hsinchu County':
-                case 'Chiayi City':
-                    color = '#EB3323';
-                    break;
-                case 'Nantou County':
-                case 'Penghu County':
-                case 'Chiayi County':
-                    color = '#854693';
-                    break;
-                case 'Yunlin County':
-                case 'Kaohsiung City':
-                case 'Keelung City':
-                    color = '#731425';
-                    break;
+            const { score } = AQI.find(aqi => aqi.location === feature.properties.COUNTYNAME);
+            switch (score) {
+                case '良好': color = '#B3FBA6'; break;
+                case '普通': color = '#FFFD54'; break;
+                case '對敏感族群不健康': color = '#EF8432'; break;
+                case '對所有族群不健康': color = '#EB3323'; break;
+                case '非常不健康': color = '#854693'; break;
+                case '危害': color = '#731425'; break;
             }
             return {
                 fillColor: color,
