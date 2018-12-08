@@ -10,17 +10,23 @@ const lng = 121.20139673233034;
 
 const leafletMap = new LeafletMap();
 
+let AQI = [];
+
 window.onload = () => {
 
     leafletMap.init(lat, lng, zoom, false);
 
     const URL = './assets/AQI.json';
-    let AQI = [];
 
     loading(true);
+
+    LoadMap();
+
     fetch(URL).then(response => response.json())
         .then(datas => {
-            AQI = datas;
+
+            caculateScore(datas);
+
             datas.forEach(data => {
                 const popup = `
                 <div class="popup">
@@ -31,8 +37,23 @@ window.onload = () => {
                 `;
                 leafletMap.addMarker(Number(data['Latitude']), Number(data['Longitude']), {}, popup);
             });
+
+            LoadGeoLayer();
+
         }).catch(err => console.log(err));
 
+    document.querySelector('.pin').addEventListener('click', e => {
+        const treeClass = document.querySelector('.tree').classList;
+        const status = treeClass.value.includes('close');
+        if (status) {
+            treeClass.remove('close');
+        } else {
+            treeClass.add('close');
+        }
+    });
+};
+
+function LoadMap() {
     const maps = [];
     document.querySelectorAll('.tree input[type=checkbox]').forEach(node => {
         let layer = null;
@@ -53,18 +74,20 @@ window.onload = () => {
             }
         });
     });
+}
 
+function LoadGeoLayer() {
     const MAXLEN = 22;
     let counter = 0;
 
     const geo = leafletMap.addGeoJsonLayer(require('./assets/county_feature.json')["features"], {
         onEachFeature: (feature, layer) => {
             counter++;
-            if (counter >= 22) loading(false);
-            if (feature.properties && feature.properties.COUNTYENG) {
-                layer.bindPopup(feature.properties.COUNTYENG);
+            if (counter >= MAXLEN) loading(false);
+            if (feature.properties && feature.properties.COUNTYNAME) {
+                const { score } = AQI.find(aqi => aqi.location === feature.properties.COUNTYNAME);
+                layer.bindPopup(`<h5>整體總評</h5>${feature.properties.COUNTYNAME} : ${score}`);
                 layer.addEventListener('click', e => {
-                    // layer.openPopup();
                     console.log(feature.properties, layer);
                 });
             }
@@ -114,18 +137,50 @@ window.onload = () => {
             };
         },
     });
+}
 
-    document.querySelector('.pin').addEventListener('click', e => {
-        const treeClass = document.querySelector('.tree').classList;
-        const status = treeClass.value.includes('close');
-        if (status) {
-            treeClass.remove('close');
-        } else {
-            treeClass.add('close');
+/**
+ * Caculate city or county score
+ * @param {array} datas 
+ */
+function caculateScore(datas) {
+    let county = [];
+    datas.forEach(data => {
+        const { County, Status } = data;
+        if (county.find(({ location }) => { return location === County }) === undefined) {
+            county.push({
+                location: County,
+                status: {
+                    '良好': 0,
+                    '普通': 0,
+                    '對敏感族群不健康': 0,
+                    '對所有族群不健康': 0,
+                    '非常不健康': 0,
+                    '危害': 0,
+                },
+                score: null,
+            });
         }
-    });
-};
 
+        let c = county.find(({ location }) => { return location === County });
+        c.status[Status]++;
+
+        county.map(c => {
+            let max = 0;
+            let pointer = '';
+            Object.keys(c.status).forEach(key => {
+                if (c.status[key] > max) {
+                    max = c.status[key];
+                    pointer = key;
+                }
+            });
+            c.score = pointer;
+            return c;
+        });
+    });
+    AQI = county;
+    // console.log(AQI);
+}
 
 
 /**
