@@ -1,5 +1,13 @@
 @import './base/base';
 
+.update-label {
+  position: absolute;
+  bottom: .5rem;
+  left: .5rem;
+  color: #fff;
+  z-index: 999;
+}
+
 .loading {
   position: absolute;
   top: 40%;
