@@ -11,36 +11,20 @@ const lng = 121.20139673233034;
 const leafletMap = new LeafletMap();
 
 let AQI = [];
+let geoLayer;
+
+const URL_Prefix = './assets/';
+const ULR_Default = 'AQI_20190107.json';
 
 window.onload = () => {
 
     leafletMap.init(lat, lng, zoom, false);
 
-    const URL = './assets/AQI.json';
-
     loading(true);
 
     LoadMap();
 
-    fetch(URL).then(response => response.json())
-        .then(datas => {
-
-            caculateScore(datas);
-
-            datas.forEach(data => {
-                const popup = `
-                <div class="popup">
-                    <span class="title">地區：${data['County']}-${data['SiteName']}</span>
-                    <span class="area">PM2.5-${data['PM2.5']}</span>
-                    <span class="addr">狀態：${data['Status']}</span>
-                </div> 
-                `;
-                leafletMap.addMarker(Number(data['Latitude']), Number(data['Longitude']), {}, popup);
-            });
-
-            LoadGeoLayer();
-
-        }).catch(err => console.log(err));
+    onLoadAQI(URL_Prefix + ULR_Default);
 
     document.querySelector('.pin').addEventListener('click', e => {
         const treeClass = document.querySelector('.tree').classList;
@@ -51,7 +35,33 @@ window.onload = () => {
             treeClass.add('close');
         }
     });
+
+    document.querySelector('.select-date').addEventListener('change', e => {
+        onLoadAQI(`${URL_Prefix}AQI_${e.target.value}.json`);
+    });
 };
+
+function onLoadAQI(URL) {
+    fetch(URL).then(response => response.json())
+        .then(datas => {
+
+            caculateScore(datas);
+
+            datas.forEach(data => {
+                const popup = `
+            <div class="popup">
+                <span class="title">地區：${data['County']}-${data['SiteName']}</span>
+                <span class="area">PM2.5-${data['PM2.5']}</span>
+                <span class="addr">狀態：${data['Status']}</span>
+            </div> 
+            `;
+                leafletMap.addMarker(Number(data['Latitude']), Number(data['Longitude']), {}, popup);
+            });
+
+            LoadGeoLayer();
+
+        }).catch(err => console.log(err));
+}
 
 function LoadMap() {
     const maps = [];
@@ -80,7 +90,8 @@ function LoadGeoLayer() {
     const MAXLEN = 22;
     let counter = 0;
 
-    const geo = leafletMap.addGeoJsonLayer(require('./assets/county_feature.json')["features"], {
+    if (geoLayer) leafletMap.removeTileLayer(geoLayer);
+    geoLayer = leafletMap.addGeoJsonLayer(require('./assets/county_feature.json')["features"], {
         onEachFeature: (feature, layer) => {
             counter++;
             if (counter >= MAXLEN) loading(false);
