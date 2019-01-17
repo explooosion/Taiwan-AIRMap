@@ -14,7 +14,7 @@ let AQI = [];
 let geoLayer;
 
 const URL_Prefix = './assets/';
-const ULR_Default = 'AQI_20190112.json';
+const ULR_Default = 'AQI_20190117.json';
 
 window.onload = () => {
 
