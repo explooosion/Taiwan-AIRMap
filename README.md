@@ -25,7 +25,7 @@ Build the map with [Leaflet](https://leafletjs.com/)。Data from [空氣品質�
 ## Installation
 
 ```sh
-git clone https://github.com/explooosion/webpack4-boilerplate-leaflet.git
+git clone https://github.com/explooosion/Taiwan-AIRMap.git
 ```
 
 ```sh
