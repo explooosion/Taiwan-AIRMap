@@ -40,7 +40,7 @@ module.exports = {
         ]
     },
     plugins: [
-        new CleanWebpackPlugin(['dist']),
+        new CleanWebpackPlugin(['docs']),
         new HtmlWebpackPlugin({
             template: 'src/index.html',
             filename: 'index.html'
@@ -54,6 +54,6 @@ module.exports = {
     ],
     output: {
         filename: '[name].[hash].bundle.js',
-        path: path.resolve(__dirname, 'dist')
+        path: path.resolve(__dirname, 'docs')
     }
 };
