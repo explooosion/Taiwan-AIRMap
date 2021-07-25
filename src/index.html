@@ -5,24 +5,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>空污觀測站</title>
+    <title>即時空污觀測站</title>
     <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5g_QO7b1pBfgl9OtX6vchzZwX1Vmxo2Y" async defer></script> -->
     <!-- <script src="https://unpkg.com/es6-promise@4.0.5/dist/es6-promise.min.js"></script>
     <script>ES6Promise.polyfill();</script> -->
     <style>
-        html, body {
-        margin: 0;
-        padding: 0;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        color: #fff;
-        background-color: #242424;
-    }
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #fff;
+            background-color: #242424;
+        }
     </style>
 </head>
 
 <body>
-    <div class="update-label">Last updated: 20200212</div>
-    <select class="select-date">
+    <div class="update-label"></div>
+    <!--<select class="select-date">
         <option value="20200212">20200212</option>
         <option value="20190509">20190509</option>
         <option value="20190126">20190126</option>
@@ -33,7 +34,7 @@
         <option value="20190104">20190104</option>
         <option value="20181229">20181229</option>
         <option value="20181208">20181208</option>
-    </select>
+    </select> -->
     <div id="map" class="map"></div>
     <img class="loading" src="./assets/cat.gif" alt="loading" title="loading" style="display: none;">
     <div class="tree">

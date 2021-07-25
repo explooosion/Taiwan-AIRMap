@@ -13,8 +13,10 @@ const leafletMap = new LeafletMap();
 let AQI = [];
 let geoLayer;
 
-const URL_Prefix = './assets/';
-const ULR_Default = 'AQI_20200212.json';
+// const URL_Prefix = './assets/';
+
+// Get realtime data
+const ULR_Default = 'https://data.epa.gov.tw/api/v1/aqx_p_432?limit=1000&api_key=9be7b239-557b-4c10-9775-78cadfc555e9&sort=ImportDate%20desc&format=json';
 
 window.onload = () => {
 
@@ -24,7 +26,7 @@ window.onload = () => {
 
     LoadMap();
 
-    onLoadAQI(URL_Prefix + ULR_Default);
+    onLoadAQI(ULR_Default);
 
     document.querySelector('.pin').addEventListener('click', e => {
         const treeClass = document.querySelector('.tree').classList;
@@ -36,18 +38,21 @@ window.onload = () => {
         }
     });
 
-    document.querySelector('.select-date').addEventListener('change', e => {
-        onLoadAQI(`${URL_Prefix}AQI_${e.target.value}.json`);
-    });
+    // document.querySelector('.select-date').addEventListener('change', e => {
+    //     onLoadAQI(`${URL_Prefix}AQI_${e.target.value}.json`);
+    // });
+
+    document.querySelector('.update-label').innerHTML = `Last updated: ${new Date().toLocaleDateString()}`;
 };
 
 function onLoadAQI(URL) {
     fetch(URL).then(response => response.json())
-        .then(datas => {
+        .then(datas => datas.records)
+        .then(records => {
 
-            caculateScore(datas);
+            caculateScore(records);
 
-            datas.forEach(data => {
+            records.forEach(data => {
                 const popup = `
             <div class="popup">
                 <span class="title">地區：${data['County']}-${data['SiteName']}</span>
